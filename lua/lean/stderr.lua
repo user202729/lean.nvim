@@ -12,6 +12,7 @@ local Window = require 'std.nvim.window'
 local infoview = require 'lean.infoview'
 
 local stderr = {}
+local __next_buffer_id = 0
 local current = {}
 
 ---Open a window for the stderr buffer of the configured height.
@@ -44,8 +45,9 @@ end
 function stderr.show(message)
   vim.schedule(function()
     if not current.buffer or not current.buffer:is_valid() then
+      __next_buffer_id = __next_buffer_id + 1
       current.buffer = Buffer.create {
-        name = 'lean://stderr',
+        name = 'lean://stderr/' .. __next_buffer_id,
         listed = false,
         scratch = true,
         options = { buftype = 'nofile' },
